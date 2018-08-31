@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div style="width:600px;height:600px;margin:0px;border: 1px solid #000;background: url(img/bak.jpg);">
+			<canvas id="can" width="600px" height="600px" onclick="play(event)"></canvas>
+		</div>
+		<script src="js/detemine.js"></script>
+		<script>
+			var maps=new Array(15);
+			for(var i=0;i<15;i++){
+				maps[i]=new Array(15);
+				for(var j=0;j<15;j++){
+					maps[i][j]=0;
+				}
+			};
+			var black=new Image();
+			var white=new Image();
+			black.src="img/black.png";
+			white.src="img/white.png";
+			var can=document.getElementById("can");
+			var ctx=can.getContext('2d');
+			var IsBlack=true;
+			ctx.strokeStyle="#FFF"
+			for(var i=0;i<15;i++){
+				for(var j=0;j<15;j++){
+					ctx.strokeRect(j*40,i*40,40,40)
+				}
+			}
+			function play(e){
+				var leftOffset=11;
+				var x=e.clientX-leftOffset;
+				var y=e.clientY-11;
+				var row;
+				var col;
+				if(x%40<20){
+					col=parseInt(x/40);
+				}else{
+					col=parseInt(x/40+1);
+				}
+				if(y%40<20){
+					row=parseInt(y/40);
+				}else{
+					row=parseInt(y/40+1);
+				}
+				if(IsBlack){
+					IsBlack=false;
+					ctx.drawImage(black,col*40-20,row*40-20);
+					maps[row][col]=1;
+					isWin(1,row,col)
+				}
+				
+				else{
+				ctx.drawImage(white,col*40-20,row*40-20);
+				IsBlack=true;
+				maps[row][col]=2;
+				isWin(2,row,col)
+				}
+				function isWin(t,row,col){
+				var orgrow=row;
+				var orgcol=col;
+				var total=1;
+				while(col-1>0&&maps[row][col-1]==t){
+					total++;
+					col--;
+				}
+				row=orgrow;
+				col=orgcol;
+				while(col+1<15&&maps[row][col+1]==t){
+					total++;
+					col++;
+				}
+				detemine(total,t);
+				//垂直
+				row=orgrow;
+				col=orgcol;
+				total=1;
+				while(row-1>0&&maps[row-1][col]==t){
+					total++;
+					row--;
+				}
+				row=orgrow;
+				col=orgcol;
+				while(row+1>0&&maps[row+1][col]==t){
+					total++;
+					row++;
+				}
+				detemine(total,t);
+				//左下右上
+				row=orgrow;
+				col=orgcol;
+				total=1;
+				while(row+1<15&&col-1>0&&maps[row+1][col-1]==t){
+					total++;
+					row++;
+					col--;
+				}
+				row=orgrow;
+				col=orgcol;
+				while(row-1>0&&col+1<15&&maps[row-1][col+1]==t){
+					total++;
+					row--;
+					col++;
+				}
+				detemine(total,t);
+				//左上右下
+				row=orgrow;
+				col=orgcol;
+				total=1;
+				while(row-1>0&&col-1>0&&maps[row-1][col-1]==t){
+					total++;
+					row--;
+					col--;
+				}
+				row=orgrow;
+				col=orgcol;
+				while(row+1<15&&col+1<15&&maps[row+1][col+1]==t){
+					total++;
+					row++;
+					col++;
+				}
+				detemine(total,t);
+			}
+				
+			}
+			
+		</script>
+	</body>
+</html>
